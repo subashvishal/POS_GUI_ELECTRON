@@ -1,0 +1,203 @@
+<div class="p-col-12">
+    <div class="p-grid">
+
+        <div class="p-col-5">
+            <div class="box">
+                <div class="p-fluid p-grid" style="margin-top: 1vh;">
+                    <div class="p-field p-col-12 p-md-12">
+                        <span class="p-float-label">
+                            <input type="text" id="inputtext" pInputText [(ngModel)]="Description">
+                            <label for="inputtext">Enter Description</label>
+                        </span>
+                    </div>
+                </div>
+
+                <div #scrollDiv id="scrollDiv" class="col-sm-6" style="height:243px; overflow-y: scroll;"
+                    (scroll)="onScroll($event)">
+                    <p-table #dt [value]="ItemData" [columns]="ItemColumn" [responsive]="true" autoLayout="true"
+                        selectionMode="single" [loading]="loading" exportFilename="ITEM_DATA">
+                        <ng-template pTemplate="header" let-VatColumn>
+                            <tr style="text-align: center;padding: 1vh !important;">
+                                <th *ngFor="let col of ItemColumn">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-columns="columns" let-response>
+                            <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
+                                <td *ngFor="let col of columns" selectionMode="single">
+                                    {{response[col.SlNo]}} {{response[col.field]}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <!-- <div class="table-screen-size">
+                    <p-table #dt [value]="ItemData" [columns]="ItemColumn" [scrollable]="true" scrollHeight="200px"
+                        [responsive]="true" autoLayout="true" selectionMode="single" [loading]="loading"
+                        exportFilename="ITEM_DATA">
+                        <ng-template pTemplate="header" let-VatColumn>
+                            <tr style="text-align: center;padding: 1vh !important;">
+                                <th *ngFor="let col of ItemColumn">
+                                    {{col.header}}
+                                </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-columns="columns" let-response>
+                            <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
+                                <td *ngFor="let col of columns" selectionMode="single">
+                                    {{response[col.SlNo]}} {{response[col.field]}}
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="p-col-7">
+            <div *ngIf="enableMain">
+                <span *ngFor="let d of menuTitle; let i = index;">
+                    <input #inputValue
+                        style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;color: white;"
+                        [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button"
+                        (click)="onSideMenuGet(d)" [ngValue]=d value={{d.ID}} class="p-mr-1 p-mb-1">
+                </span>
+            </div>
+
+            <div *ngIf="enableSide">
+                <input #inputValue
+                    style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;background-color:black"
+                    pButton pRipple type="button" (click)="onBack()" [ngValue]=d value=BACK
+                    class="p-col-2 p-mr-1 p-mb-1">
+                <span *ngFor="let d of menuTempTitle; let i = index">
+                    <input #inputValue
+                        style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;"
+                        [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button" [ngValue]=d
+                        value={{d.ID}} class="p-col-2 p-mr-1 p-mb-1">
+                </span>
+                <div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-3" style="margin-top: 7vh;">
+            <div class="box">
+                <div style="background-color: gold !important;
+                        border: 6px solid darkgoldenrod;
+                        height: 20vh;" class="col s12 m4 l4 card-panel grey lighten-5 z-depth-2">
+                    <div class="row valign-wrapper">
+                        <div class="col s2">
+                        </div>
+                        <div style="padding: 3.2vh;" class="col s10">
+                            <div class="black-text">
+                                ID - C02245
+                            </div>
+                            <div class="black-text">
+                                NAME - SUBASH
+                            </div>
+                            <div class="black-text">
+                                DESIGNATION - DEVELOPER
+                            </div>
+                            <div class="black-text">
+                                Phone - 9042931728
+                            </div>
+                            <div class="black-text">
+                                PURCHASE COUNT - 90
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-5" style="margin-top: 1.5vh;">
+            <div class="box">
+                <div style="background-color: darkkhaki;
+                border: 11px solid darkgoldenrod;
+                height: 31vh;" class="card horizontal">
+                    <div class="card-stacked">
+                        <a style="margin-left: auto;color: crimson;">23/02/2021 02:13:13</a>
+                        <div style="border-top: 2px solid darkgoldenrod;" class="card-content">
+                            <!-- <div> -->
+                            <p>TOTAL<a style="float: right;">€91.35</a></p>
+                            <p>DISC<a style="float: right;">€0.00</a></p>
+                            <p>PAID<a style="float: right;">€0.00</a></p>
+                            <p>CHANGE<a style="float: right;">€0.00</a></p>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-4">
+            <div class="box">
+                <app-cal-data></app-cal-data>
+            </div>
+        </div>
+        <div class="p-col-12" style="padding: 1vh 4vh 0vh 4vh;">
+            <app-button></app-button>
+        </div>
+    </div>
+</div>
+
+
+<p-dialog header={{CostLabel}} [(visible)]="enableCost">
+    <div class="col-5">
+        <div>
+            <span *ngFor="let d of doubleCost1; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+        <div>
+            <span *ngFor="let d of doubleCost2; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+    </div>
+    <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">€</span>
+                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
+                <span class="p-inputgroup-addon">.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-12">
+            <span class="p-float-label">
+                <input type="text" id="inputtext" pInputText [(ngModel)]="Price">
+                <label for="inputtext">Entered Price</label>
+            </span>
+        </div>
+    </div> -->
+    <div class="col-5">
+        <div>
+            <span *ngFor="let d of singleCost1; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;border-radius: 2vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+        <div>
+            <span *ngFor="let d of singleCost2; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+    </div>
+    <button pButton type="button" label="Cancel" class="p-col-3 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Enter" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Clear" class="p-col-3 p-mr-1 p-mb-1 p-button-outlined"></button>
+</p-dialog>

@@ -1,0 +1,153 @@
+<!-- Description -->
+<!-- 
+<div class="p-col-12 p-fluid" style="margin-top: 1vh;">
+    <div class="p-field p-col-12 p-md-12">
+        <span class="p-float-label">
+            <input type="text" id="inputtext" pInputText [(ngModel)]="Description">
+            <label for="inputtext">Enter Description</label>
+        </span>
+    </div>
+
+    <div class="p-col-12 table-screen-size">
+        <p-table #dt [value]="DescriptionData" [columns]="ItemColumn" [rows]="10"
+            [rowsPerPageOptions]="[10,20,30,40,50,100]" [paginator]="true" [responsive]="true" autoLayout="true"
+            selectionMode="single" [loading]="loading" exportFilename="ITEM_DATA">
+            <ng-template pTemplate="header" let-VatColumn>
+                <tr style="text-align: center">
+                    <th *ngFor="let col of VatColumn">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-columns="columns" let-response>
+                <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
+                    <td *ngFor="let col of columns" selectionMode="single">
+                        {{response[col.SlNo]}} {{response[col.field]}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div> -->
+
+<div class="p-col-6">
+    <div class="box">
+        <div class="p-fluid p-grid" style="margin-top: 1vh;">
+            <div class="p-field p-col-12 p-md-12">
+                <span class="p-float-label">
+                    <input type="text" id="inputtext" pInputText [(ngModel)]="Description">
+                    <label for="inputtext">Enter Description</label>
+                </span>
+            </div>
+        </div>
+        <!-- <input class="p-field p-col-12 p-md-12" type="text" pInputText placeholder="Enter Description" /> -->
+        <div class="table-screen-size">
+            <p-table #dt [value]="ItemData" [columns]="ItemColumn" [rows]="10"
+                [rowsPerPageOptions]="[10,20,30,40,50,100]" [paginator]="true" [responsive]="true" autoLayout="true"
+                selectionMode="single" [loading]="loading" exportFilename="ITEM_DATA">
+                <ng-template pTemplate="header" let-VatColumn>
+                    <tr style="text-align: center">
+                        <th *ngFor="let col of VatColumn">
+                            {{col.header}}
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-columns="columns" let-response>
+                    <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
+                        <td *ngFor="let col of columns" selectionMode="single">
+                            {{response[col.SlNo]}} {{response[col.field]}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- Menu -->
+<div class="p-col-12">
+    <!-- <div class="box"> -->
+    <div *ngIf="enableMain">
+        <span *ngFor="let d of menuTitle; let i = index;">
+            <!-- <span *ngFor="let c of MenuColor"> -->
+            <input #inputValue style="padding: 0px;font-size: small;height: 8vh;display: inline-grid;color: white;"
+                [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button" (click)="onSideMenuGet(d)"
+                [ngValue]=d value={{d.ID}} class="p-col-2 p-mr-1 p-mb-1">
+        </span>
+    </div>
+
+    <div *ngIf="enableSide">
+        <input #inputValue
+            style="padding: 0px;font-size: small;height: 8vh;width: 27vh;display: inline-grid;background-color:black"
+            pButton pRipple type="button" (click)="onBack()" [ngValue]=d value=BACK class="p-col-2 p-mr-1 p-mb-1">
+        <span *ngFor="let d of menuTempTitle; let i = index">
+            <input #inputValue style="padding: 0px;font-size: small;height: 8vh;width: 27vh;display: inline-grid;"
+                [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button" [ngValue]=d value={{d.ID}}
+                class="p-col-2 p-mr-1 p-mb-1">
+        </span>
+        <div>
+        </div>
+    </div>
+    <!-- </div> -->
+</div>
+
+
+<p-dialog header={{CostLabel}} [(visible)]="enableCost">
+    <div class="col-5">
+        <div>
+            <span *ngFor="let d of doubleCost1; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+        <div>
+            <span *ngFor="let d of doubleCost2; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+    </div>
+    <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">€</span>
+                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
+                <span class="p-inputgroup-addon">.00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-12">
+            <span class="p-float-label">
+                <input type="text" id="inputtext" pInputText [(ngModel)]="Price">
+                <label for="inputtext">Entered Price</label>
+            </span>
+        </div>
+    </div> -->
+    <div class="col-5">
+        <div>
+            <span *ngFor="let d of singleCost1; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+        <div>
+            <span *ngFor="let d of singleCost2; let i = index;">
+                <input #inputValue
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
+                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+            </span>
+        </div>
+    </div>
+    <button pButton type="button" label="Cancel" class="p-col-3 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Enter" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Clear" class="p-col-3 p-mr-1 p-mb-1 p-button-outlined"></button>
+</p-dialog>
