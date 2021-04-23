@@ -1,17 +1,17 @@
-<div class="p-col-12">
+<div class="p-col-12" style="background-color: dimgray;">
     <div class="p-grid">
-
-        <div class="p-col-5">
+        <p-toast position="top-center" key="t-err" (onClose)="onClose()"></p-toast>
+        <div class="p-col-5" style="background-color: ghostwhite;">
             <div class="box">
                 <div class="p-fluid p-grid" style="margin-top: 1vh;">
                     <div class="p-field p-col-12 p-md-12">
                         <span class="p-float-label">
-                            <input type="text" id="inputtext" pInputText [(ngModel)]="Description">
+                            <input type="text" id="inputtext" pInputText [(ngModel)]="Description"
+                                (keyup.enter)="onDescription()">
                             <label for="inputtext">Enter Description</label>
                         </span>
                     </div>
                 </div>
-
                 <div #scrollDiv id="scrollDiv" class="col-sm-6" style="height:243px; overflow-y: scroll;"
                     (scroll)="onScroll($event)">
                     <p-table #dt [value]="ItemData" [columns]="ItemColumn" [responsive]="true" autoLayout="true"
@@ -56,28 +56,109 @@
             </div>
         </div>
 
-        <div class="p-col-7">
+        <div class="p-col-7" style="background-color: black;padding: 10px;">
             <div *ngIf="enableMain">
                 <span *ngFor="let d of menuTitle; let i = index;">
-                    <input #inputValue
-                        style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;color: white;"
+                    <input #inputValue style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;"
                         [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button"
-                        (click)="onSideMenuGet(d)" [ngValue]=d value={{d.ID}} class="p-mr-1 p-mb-1">
+                        (click)="onSideMenuGet(d)" [ngValue]=d value={{d.Description}} class="p-mr-1 p-mb-1">
                 </span>
             </div>
 
             <div *ngIf="enableSide">
                 <input #inputValue
-                    style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;background-color:black"
-                    pButton pRipple type="button" (click)="onBack()" [ngValue]=d value=BACK
-                    class="p-col-2 p-mr-1 p-mb-1">
+                    style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;background-color:darkred" pButton
+                    pRipple type="button" (click)="onBack()" [ngValue]=d value=BACK class="p-col-2 p-mr-1 p-mb-1">
                 <span *ngFor="let d of menuTempTitle; let i = index">
-                    <input #inputValue
-                        style="padding: 0px;font-size: small;height: 6.5vh;border-radius: 2vh;width: 28vh;display: inline-grid;"
-                        [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button" [ngValue]=d
-                        value={{d.ID}} class="p-col-2 p-mr-1 p-mb-1">
+                    <input #inputValue style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;"
+                        [ngStyle]="{'background-color':d.Color}" (click)="onSubMenuItem(d)" pButton pRipple
+                        type="button" [ngValue]=d value={{d.Description}} class="p-col-2 p-mr-1 p-mb-1">
                 </span>
                 <div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-5" style="margin-top: 1.5vh;">
+            <div class="box">
+                <div style="background-color: darkkhaki;
+                border: 11px solid darkgoldenrod;
+                height: 31vh;" class="card horizontal">
+                    <div class="card-stacked">
+                        <a style="margin-left: auto;color: crimson;">23/02/2021 02:13:13</a>
+                        <div style="border-top: 2px solid darkgoldenrod;" class="card-content">
+                            <!-- <div> -->
+                            <p>TOTAL<a style="float: right;">£ {{Total}}</a></p>
+                            <p>DISC<a style="float: right;">£ 0</a></p>
+                            <p>PAID<a style="float: right;">£ {{Paid}}</a></p>
+                            <p>CHANGE<a style="float: right;">£ {{ChangeAmount}}</a></p>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-4">
+            <div class="box">
+                <div class="p-col-12">
+                    <div>
+                        <input pButton pRipple type="button" (click)="onExactAmount()" value="£ {{Total}}" label=""
+                            style="border-radius: 1vh;padding: 1.4vh; width: 15vh;background-color: black;"
+                            class="p-col-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="7" label="7"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="8" label="8"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="9" label="9"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                    </div>
+                    <div>
+                        <input pButton pRipple type="button" (click)="onNearAmount()" value="£ {{NearTotal}}" label=""
+                            style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="6" label="6"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="5" label="5"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="4" label="4"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                    </div>
+                    <div>
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="£ {{NextNear}}" label=""
+                            style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="3" label="3"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="2" label="2"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="1" label="1"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                    </div>
+                    <div>
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="£ {{LastTotal}}"
+                            label="" style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="0" label="0"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="00" label="00"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="X" label="X"
+                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                    </div>
+                    <div>
+                        <input pButton pRipple type="button" value="CARD" label="Card"
+                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" value="ENTER" (click)="onDescription()" label="Enter"
+                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" value="CLEAR" label="Clear"
+                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                        <input pButton pRipple type="button" value="CASH" label="Cash"
+                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
+                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,6 +170,7 @@
                         height: 20vh;" class="col s12 m4 l4 card-panel grey lighten-5 z-depth-2">
                     <div class="row valign-wrapper">
                         <div class="col s2">
+                            <img src="src/images/Subash_Photo.jpg" alt="" class="circle responsive-img">
                         </div>
                         <div style="padding: 3.2vh;" class="col s10">
                             <div class="black-text">
@@ -111,30 +193,7 @@
                 </div>
             </div>
         </div>
-        <div class="p-col-5" style="margin-top: 1.5vh;">
-            <div class="box">
-                <div style="background-color: darkkhaki;
-                border: 11px solid darkgoldenrod;
-                height: 31vh;" class="card horizontal">
-                    <div class="card-stacked">
-                        <a style="margin-left: auto;color: crimson;">23/02/2021 02:13:13</a>
-                        <div style="border-top: 2px solid darkgoldenrod;" class="card-content">
-                            <!-- <div> -->
-                            <p>TOTAL<a style="float: right;">€91.35</a></p>
-                            <p>DISC<a style="float: right;">€0.00</a></p>
-                            <p>PAID<a style="float: right;">€0.00</a></p>
-                            <p>CHANGE<a style="float: right;">€0.00</a></p>
-                            <!-- </div> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="p-col-4">
-            <div class="box">
-                <app-cal-data></app-cal-data>
-            </div>
-        </div>
+
         <div class="p-col-12" style="padding: 1vh 4vh 0vh 4vh;">
             <app-button></app-button>
         </div>
@@ -164,7 +223,7 @@
     <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
         <div class="p-field p-col-12 p-md-12">
             <div class="p-inputgroup">
-                <span class="p-inputgroup-addon">€</span>
+                <span class="p-inputgroup-addon">£</span>
                 <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
                 <span class="p-inputgroup-addon">.00</span>
             </div>
@@ -200,4 +259,18 @@
     <button pButton type="button" label="Cancel" class="p-col-3 p-mr-4 p-mb-1 p-button-outlined"></button>
     <button pButton type="button" label="Enter" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined"></button>
     <button pButton type="button" label="Clear" class="p-col-3 p-mr-1 p-mb-1 p-button-outlined"></button>
+</p-dialog>
+
+
+<p-dialog [(visible)]="EnableChangeAmount">
+    <!-- <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-12">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">£</span>
+                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
+                <span class="p-inputgroup-addon">.00</span>
+            </div>
+        </div>
+    </div> -->
+    Change : £ {{ChangeAmount}}
 </p-dialog>

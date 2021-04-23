@@ -12,7 +12,7 @@ export class PathConstants {
   public static readonly MAIN_MENU = '/retail/Menu_Header';
   public static readonly SUB_MENU = '/retail/Menu_Line';
   public static readonly ALL_MENU_POST = '/api/Menu/Post';
-  public static readonly ITEM = '/api/Item';
+  public static readonly ITEM = '/pos/item_list';
   public static readonly RECEIPTHEADER = '/api/ReceiptHeader';
   public static readonly RECEIPTFOOTER = '/api/ReceiptFooter';
   public static readonly AUTHORIZATION = '/api/Autherization';
