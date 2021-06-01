@@ -53,7 +53,7 @@ import { RestAPIService } from './shared-services/restAPI.service';
 import { PathConstants } from './const/PathConstants';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { PasswordModule } from 'primeng/password';
 import { SlideMenuModule } from 'primeng/slidemenu';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
@@ -79,21 +79,21 @@ import { ColorPickerModule } from 'primeng/colorpicker';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TreeTableModule } from 'primeng/treetable';
 import { HomeComponent } from './home/home.component';
-import { DescriptionComponent } from './description/description.component';
-import { ButtonComponent } from './button/button.component';
-import { CalDataComponent } from './cal-data/cal-data.component';
 import { EmployeeDetailComponent } from './employee-detail/employee-detail.component';
 import { MenuComponent } from './menu/menu.component';
+import { LoginComponent } from './login/login.component';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {InputNumberModule} from 'primeng/inputnumber';
+import {DividerModule} from 'primeng/divider';
+import {DataViewModule} from 'primeng/dataview';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    DescriptionComponent,
-    ButtonComponent,
-    CalDataComponent,
     EmployeeDetailComponent,
-    MenuComponent
+    MenuComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -102,47 +102,11 @@ import { MenuComponent } from './menu/menu.component';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    MatSliderModule,
     ClipboardModule,
     CdkStepperModule,
     CdkTableModule,
     CdkTreeModule,
     DragDropModule,
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatStepperModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
     OverlayModule,
     PortalModule,
     ScrollingModule,
@@ -172,6 +136,11 @@ import { MenuComponent } from './menu/menu.component';
     ListboxModule,
     CalendarModule,
     PaginatorModule,
+    PasswordModule,
+    ConfirmDialogModule,
+    InputNumberModule,
+    DividerModule,
+    DataViewModule
   ],
   providers: [
     AuthService,
@@ -184,4 +153,4 @@ import { MenuComponent } from './menu/menu.component';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

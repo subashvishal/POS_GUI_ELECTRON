@@ -1,222 +1,353 @@
-<div class="p-col-12" style="background-color: dimgray;">
-    <div class="p-grid">
-        <p-toast position="top-center" key="t-err" (onClose)="onClose()"></p-toast>
-        <div class="p-col-5" style="background-color: ghostwhite;">
-            <div class="box">
-                <div class="p-fluid p-grid" style="margin-top: 1vh;">
-                    <div class="p-field p-col-12 p-md-12">
+<p-toast position="top-center" key="Auth-err" (onClose)="onAuthClose()"></p-toast>
+
+<div *ngIf="enableLogin">
+    <div class="login-wrap">
+        <div class="login-html">
+            <input id="tab-1" type="radio" name="tab" class="sign-in" checked/><label for="tab-1" class="tab">Sign In</label>
+            <input id="tab-2" type="radio" name="tab" class="sign-up" /><label for="tab-2" class="tab">Sign Up</label>
+            <div class="login-form">
+                <div class="sign-in-htm">
+                    <div class="group" style="margin-top: 3vh;">
                         <span class="p-float-label">
-                            <input type="text" id="inputtext" pInputText [(ngModel)]="Description"
-                                (keyup.enter)="onDescription()">
-                            <label for="inputtext">Enter Description</label>
+                            <input class="p-col-12 p-md-12" id="codeInput" [(ngModel)]="UserName"
+                                (input)="onInputChange($event)" value={{value}} pInputText autofocus="true"/>
+                            <label for="inputtext">User ID</label>
                         </span>
                     </div>
+
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="float-input" type="text" [(ngModel)]="Password" (input)="onInputChange(value)"
+                                value="Password" (keyup.enter)="onLogin()" pInputText class="p-col-12 p-md-12">
+                            <label for="float-input">Password</label>
+                        </span>
+                    </div>
+                    <!-- <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                        <input id="check" type="checkbox" class="check" checked/>
+                        <label for="check"><span class="icon"></span> Keep me Signed in</label>
+                        </span>
+                    </div> -->
+                    <div class="group" style="margin-top: 4vh;">
+                        <input type="submit" class="button" (click)="submit(user)" value="Sign In" (click)="onLogin()" [disabled]="!UserName || !Password" />
+                    </div>
+                    <div class="hr"></div>
+                    <div class="foot-lnk" [disabled]=true>
+                        <a href="#forgot">Forgot Password?</a>
+                    </div>
                 </div>
-                <div #scrollDiv id="scrollDiv" class="col-sm-6" style="height:243px; overflow-y: scroll;"
-                    (scroll)="onScroll($event)">
-                    <p-table #dt [value]="ItemData" [columns]="ItemColumn" [responsive]="true" autoLayout="true"
-                        selectionMode="single" [loading]="loading" exportFilename="ITEM_DATA">
-                        <ng-template pTemplate="header" let-VatColumn>
-                            <tr style="text-align: center;padding: 1vh !important;">
-                                <th *ngFor="let col of ItemColumn">
-                                    {{col.header}}
-                                </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-columns="columns" let-response>
-                            <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
-                                <td *ngFor="let col of columns" selectionMode="single">
-                                    {{response[col.SlNo]}} {{response[col.field]}}
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-
-                <!-- <div class="table-screen-size">
-                    <p-table #dt [value]="ItemData" [columns]="ItemColumn" [scrollable]="true" scrollHeight="200px"
-                        [responsive]="true" autoLayout="true" selectionMode="single" [loading]="loading"
-                        exportFilename="ITEM_DATA">
-                        <ng-template pTemplate="header" let-VatColumn>
-                            <tr style="text-align: center;padding: 1vh !important;">
-                                <th *ngFor="let col of ItemColumn">
-                                    {{col.header}}
-                                </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-columns="columns" let-response>
-                            <tr [pSelectableRow]="response" (dblclick)="onRow($event, response)">
-                                <td *ngFor="let col of columns" selectionMode="single">
-                                    {{response[col.SlNo]}} {{response[col.field]}}
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div> -->
-            </div>
-        </div>
-
-        <div class="p-col-7" style="background-color: black;padding: 10px;">
-            <div *ngIf="enableMain">
-                <span *ngFor="let d of menuTitle; let i = index;">
-                    <input #inputValue style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;"
-                        [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button"
-                        (click)="onSideMenuGet(d)" [ngValue]=d value={{d.Description}} class="p-mr-1 p-mb-1">
-                </span>
-            </div>
-
-            <div *ngIf="enableSide">
-                <input #inputValue
-                    style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;background-color:darkred" pButton
-                    pRipple type="button" (click)="onBack()" [ngValue]=d value=BACK class="p-col-2 p-mr-1 p-mb-1">
-                <span *ngFor="let d of menuTempTitle; let i = index">
-                    <input #inputValue style="padding: 0px;height: 6.5vh;width: 28vh;display: inline-grid;"
-                        [ngStyle]="{'background-color':d.Color}" (click)="onSubMenuItem(d)" pButton pRipple
-                        type="button" [ngValue]=d value={{d.Description}} class="p-col-2 p-mr-1 p-mb-1">
-                </span>
-                <div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-col-5" style="margin-top: 1.5vh;">
-            <div class="box">
-                <div style="background-color: darkkhaki;
-                border: 11px solid darkgoldenrod;
-                height: 31vh;" class="card horizontal">
-                    <div class="card-stacked">
-                        <a style="margin-left: auto;color: crimson;">23/02/2021 02:13:13</a>
-                        <div style="border-top: 2px solid darkgoldenrod;" class="card-content">
-                            <!-- <div> -->
-                            <p>TOTAL<a style="float: right;">£ {{Total}}</a></p>
-                            <p>DISC<a style="float: right;">£ 0</a></p>
-                            <p>PAID<a style="float: right;">£ {{Paid}}</a></p>
-                            <p>CHANGE<a style="float: right;">£ {{ChangeAmount}}</a></p>
-                            <!-- </div> -->
-                        </div>
+                <div class="sign-up-htm">
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="codeInput" [(ngModel)]="UserID" (input)="onInputChange($event)" value={{value}}
+                                pInputText class="p-col-12 p-md-12" autofocus="true">
+                            <label for="inputtext">User ID</label>
+                        </span>
+                    </div>
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="codeInput" [(ngModel)]="User" (input)="onInputChange($event)" value={{value}}
+                                pInputText class="p-col-12 p-md-12">
+                            <label for="inputtext">User Name</label>
+                        </span>
+                    </div>
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="float-input" type="text" [(ngModel)]="Pass" (input)="onInputChange(value)"
+                                value="Pass" pInputText class="p-col-12 p-md-12">
+                            <label for="float-input">Password</label>
+                        </span>
+                    </div>
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="float-input" type="text" [(ngModel)]="CPassword" (input)="onInputChange(value)"
+                                value="CPassword" pInputText class="p-col-12 p-md-12">
+                            <label for="float-input">Confirm Password</label>
+                        </span>
+                    </div>
+                    <div class="group" style="margin-top: 4vh;">
+                        <span class="p-float-label">
+                            <input id="float-input" type="text" [(ngModel)]="Email" (input)="onInputChange(value)"
+                                value="Email" pInputText class="p-col-12 p-md-12">
+                            <label for="float-input">Email ID</label>
+                        </span>
+                    </div>
+                    <div class="group" style="margin-top: 3vh;">
+                        <input type="submit" class="button" value="Sign Up" (click)="onRegister()" />
+                    </div>
+                    <!-- <div class="hr">
+                    </div> -->
+                    <div class="foot-lnk">
+                        <label for="tab-1">Already Member?</label>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="p-col-4">
-            <div class="box">
-                <div class="p-col-12">
-                    <div>
-                        <input pButton pRipple type="button" (click)="onExactAmount()" value="£ {{Total}}" label=""
-                            style="border-radius: 1vh;padding: 1.4vh; width: 15vh;background-color: black;"
-                            class="p-col-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="7" label="7"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="8" label="8"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="9" label="9"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                    </div>
-                    <div>
-                        <input pButton pRipple type="button" (click)="onNearAmount()" value="£ {{NearTotal}}" label=""
-                            style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="6" label="6"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="5" label="5"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="4" label="4"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                    </div>
-                    <div>
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="£ {{NextNear}}" label=""
-                            style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="3" label="3"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="2" label="2"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="1" label="1"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                    </div>
-                    <div>
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="£ {{LastTotal}}"
-                            label="" style="border-radius: 1vh;background-color: black;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="0" label="0"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="00" label="00"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" (click)="onCalDesc($event)" value="X" label="X"
-                            style="padding: 1.4vh; width: 15vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                    </div>
-                    <div>
-                        <input pButton pRipple type="button" value="CARD" label="Card"
-                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" value="ENTER" (click)="onDescription()" label="Enter"
-                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" value="CLEAR" label="Clear"
-                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                        <input pButton pRipple type="button" value="CASH" label="Cash"
-                            style="background-color: darkslategrey; border-radius: 1vh;padding: 1.4vh; width: 15vh;"
-                            class="p-col-2 p-row-2 p-mr-1 p-mb-1">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-col-3" style="margin-top: 7vh;">
-            <div class="box">
-                <div style="background-color: gold !important;
-                        border: 6px solid darkgoldenrod;
-                        height: 20vh;" class="col s12 m4 l4 card-panel grey lighten-5 z-depth-2">
-                    <div class="row valign-wrapper">
-                        <div class="col s2">
-                            <img src="src/images/Subash_Photo.jpg" alt="" class="circle responsive-img">
-                        </div>
-                        <div style="padding: 3.2vh;" class="col s10">
-                            <div class="black-text">
-                                ID - C02245
-                            </div>
-                            <div class="black-text">
-                                NAME - SUBASH
-                            </div>
-                            <div class="black-text">
-                                DESIGNATION - DEVELOPER
-                            </div>
-                            <div class="black-text">
-                                Phone - 9042931728
-                            </div>
-                            <div class="black-text">
-                                PURCHASE COUNT - 90
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-col-12" style="padding: 1vh 4vh 0vh 4vh;">
-            <app-button></app-button>
         </div>
     </div>
 </div>
 
 
-<p-dialog header={{CostLabel}} [(visible)]="enableCost">
+<!-- // Home -->
+<div *ngIf="enableHome" class="p-col-12" style="background-color: ghostwhite;">
+    <div class="p-grid">
+        <div id="interactive" class="viewport">
+            <!-- QuaggaJS will populate this element -->
+        </div>
+        <p-toast position="top-center" key="t-err" (onClose)="onClose()"></p-toast>
+        <div class="p-col-5" style="background-color: ghostwhite; height: 65vh;padding: 0px 2px 0px 3px;">
+            <!-- <div class="box"> -->
+            <div class="p-fluid p-grid" style="margin-top: 1vh;">
+                <div class="p-field p-col-12 p-md-12">
+                    <span class="p-float-label">
+                            <input id="codeInput" pInputText [(ngModel)]="Description"
+                                (keyup.enter)="onBarcodeDescription($event)" autofocus="true">
+                            <label for="inputtext">Enter Description</label>
+                        </span>
+                </div>
+            </div>
+            <div>
+                {{Desc}}
+            </div>
+
+            <div #scrollDiv id="scrollDiv" [scrollTop]="scrollDiv.scrollHeight" class="col-sm-6 card" style="height:50vh; background-color: white; overflow-y: auto;">
+                <!-- <p-scrollPanel [style]="{width: '100%', height:'50vh'}" styleClass="custombar1"> -->
+                <p-table #dt [value]="ItemData" [columns]="ItemColumn" selectionMode="single" [globalFilterFields]="['Description']" (onRowSelect)="onRowSelect($event)" [(selection)]="SelectedRowItem" dataKey="Sno" [loading]="loading" (onRowUnselect)="onRowUnselect($event)">
+                    <!-- <p-scrollPanel [style]="{width: '100%', height: '200px'}" styleClass="custombar1"> -->
+
+                    <ng-template pTemplate="caption">
+                        <div class="p-d-flex p-ai-center p-jc-between">
+                            <h5 class="p-m-0">Item Table</h5>
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                            <button pButton pRipple [label]="Clear" icon="pi pi-trash" class="p-button-warning" (click)="deleteSearchProducts()"></button>
+                            </span>
+                        </div>
+                    </ng-template>
+
+                    <!-- <ng-template pTemplate="header">
+                        <th pSortableColumn="Sno">Sno
+                            <p-sortIcon field="Sno"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Description" style="width: 24vh;">Item
+                            <p-sortIcon field="Description"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Quantity">Qty
+                            <p-sortIcon field="Quantity"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Price">Price
+                            <p-sortIcon field="Price"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Discount">Disc
+                            <p-sortIcon field="Discount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="Amount">Amt
+                            <p-sortIcon field="Amount"></p-sortIcon>
+                        </th>
+                    </ng-template> -->
+
+                    <ng-template pTemplate="header">
+                        <!-- <th>Sno</th> -->
+                        <th style="width: 24vh;">Item</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Disc</th>
+                        <th>Amt</th>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-response>
+                        <tr [pSelectableRow]="response">
+                            <!-- <td>{{response.Sno}}</td> -->
+                            <td style="font-size: x-small; font-weight: 700;">{{response.Description}}</td>
+                            <td>{{response.Quantity}}</td>
+                            <td>{{response.Price | currency:'GBP'}}</td>
+                            <td>{{response.Discount | currency:'GBP'}}</td>
+                            <td>{{response.Amount | currency:'GBP'}}</td>
+                            <!-- <td>
+                                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(response)"></button>
+                            </td>
+                            <td>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(response)"></button>
+                            </td> -->
+                        </tr>
+                    </ng-template>
+                </p-table>
+                <!-- </p-scrollPanel> -->
+            </div>
+        </div>
+
+        <div class="p-col-7" style="height: 60vh">
+            <div class="p-grid">
+                <div class="p-col-12" style="height:60vh">
+                    <p-tabView class="p-col-7" styleClass="tabview-custom">
+                        <p-tabPanel *ngIf="FunctionBack">
+                            <ng-template pTemplate="Back">
+                                <i class="pi pi-calendar"></i>
+                                <span>Back</span>
+                            </ng-template>
+                        </p-tabPanel>
+                        <p-tabPanel>
+                            <ng-template pTemplate="header">
+                                <i class="pi pi-calendar"></i>
+                                <span>Menu Card</span>
+                            </ng-template>
+                            <div *ngIf="enableMain">
+                                <span *ngFor="let d of menuTitle; let i = index;">
+                        <input #inputValue style="padding: 0px;height: 6.5vh;width: 20vh;display: inline-grid;"
+                            [ngStyle]="{'background-color':d.Color}" pButton pRipple type="button"
+                            (click)="onSideMenuGet(d,'333bottom')" [ngValue]=d value={{d.Description}}
+                            class="p-shadow-10 p-mr-1 p-mb-1">
+                    </span>
+                            </div>
+                        </p-tabPanel>
+
+
+
+
+                        <!-- //Function Buttons -->
+                        <p-tabPanel header="Happy Functions">
+                            <ng-template pTemplate="header">
+                                <i class="pi pi-user"></i>
+                                <span> Happy Function</span>
+                            </ng-template>
+                            <div class="col s12 m4 l12">
+                                <input pButton pRipple type="button" value="LOG OUT" (click)="onLogOut()" class="p-col-2 p-button-rounded p-button-danger mahh">
+                                <input pButton pRipple type="button" (click)="onTransList()" value="Sales List" class="p-col-2 p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="Cash Pay" class="p-col-2 p-button-rounded p-button-success mahh" (click)="onPetty()" id="navToggle">
+                                <input pButton pRipple type="button" value="Check Item" (click)="PriceCheck()" class="p-col-2 p-button-rounded p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="REPORTS" class="p-col-2 p-button-rounded p-button-rounded p-button-success mahh">
+                            </div>
+                        </p-tabPanel>
+
+
+                        <p-tabPanel header="Sales Function">
+                            <ng-template pTemplate="header">
+                                <i class="pi pi-user"></i>
+                                <span>Sales Function</span>
+                            </ng-template>
+                            <div class="col s12 m4 l12">
+                                <input pButton pRipple type="button" value="Clear All" (click)="onClearPermission()" class="p-col-2 p-button-rounded p-button-danger mahh">
+                                <input pButton pRipple type="button" value="Clear Line" (click)="deleteProduct(SelectedRowItem)" class="p-col-2 p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="Line Disc" (click)="LineDisc()" class="p-col-2 p-button-rounded p-button-success mahh" id="navToggle">
+                                <input pButton pRipple type="button" value="100% Disc" (click)="onCentDiscount()" class="p-col-2 p-button-rounded p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="Total Disc" (click)="TotalDisc()" class="p-col-2 p-button-rounded p-button-rounded p-button-warning mahh">
+                                <input pButton pRipple type="button" value="Pay Inst" (click)="PayInstanceSales()" class="p-col-2 p-button-rounded p-button-success mahh" id="navToggle">
+                                <input pButton pRipple type="button" value="Lottery" (click)="FromLotterySales()" class="p-col-2 p-button-rounded p-button-secondary mahh">
+
+                                <input pButton pRipple type="button" value="Acc Pay" (click)="AccPaySales()" class="p-col-2 p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="Check Item" (click)="PriceCheck()" class="p-col-2 p-button-rounded p-button-rounded p-button-secondary mahh">
+                                <input pButton pRipple type="button" value="Suspend" (click)="onSuspened()" class="p-col-2 p-button-rounded p-button-success mahh">
+
+
+                            </div>
+                        </p-tabPanel>
+
+
+                        <p-tabPanel header="Functions">
+                            <ng-template pTemplate="header">
+                                <i class="pi pi-user"></i>
+                                <span>Suspened</span>
+                            </ng-template>
+                            <div class="col s12 m4 l12">
+                                <!-- <input pButton pRipple type="button" value="SUSPEND" (click)="onSuspened()" class="p-col-2 p-button-rounded p-button-warning mahh"> -->
+                                <input pButton pRipple type="button" value=" RETRIEVE SUSPENDED" (click)="onSusupenseClick()" class="p-col-4 p-button-rounded p-button-success mahh">
+                            </div>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+                <div class="p-col-12">
+                    POS 1 {{clock}}
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-2 mahi">
+            <div class="box">
+                <div class="card horizontal storedesc mahi1">
+                    <div class="card-stacked">
+                        <!-- <a style="margin-left: auto;color: crimson;">25/05/2021 02:13:13</a> -->
+                        <div class="card-content mahi2">
+                            <p class="pFont">START<a style="float: right;">MINIMIZE</a></p>
+                            <p class="pFont1">POS SALES SOFTWARE</p>
+                            <p class="pFont1">SPICE OF ASIA</p>
+                            <p class="pFont1">Support - 9042931728</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-3 mahi">
+            <div class="box" style="border-left: 1px solid floralwhite;">
+                <div class="card horizontal mahi1">
+                    <div class="card-stacked">
+                        <div class="card-content mahi2">
+                            <p>TOTAL<a style="float: right;">£ {{Total}}</a></p>
+                            <p>DISC<a style="float: right;">£ 0</a></p>
+                            <p>PAID<a style="float: right;">£ {{Paid}}</a></p>
+                            <p>CHANGE<a style="float: right;">£ {{ChangeAmount}}</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-7 padInherit">
+            <div class="mah">
+                <input pButton pRipple type="button" (click)="onExactAmount()" value="£ {{Total}}" mode="currency" currency="GBP" label="" class="p-col-2 p-mr-1 p-mb-1 amountButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="7" label="7" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="8" label="8" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="9" label="9" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+            </div>
+            <div class="mah">
+                <input pButton pRipple type="button" (click)="onNearAmount()" value="£ {{NearTotal}}" label="" class="p-col-2 p-row-2 p-mr-1 p-mb-1 amountButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="6" label="6" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="5" label="5" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="4" label="4" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+            </div>
+            <div class="mah">
+                <input pButton pRipple type="button" (click)="onNearAmount1()" value="£ {{NextNear}}" label="" class="p-col-2 p-row-2 p-mr-1 p-mb-1 amountButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="3" label="3" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="2" label="2" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="1" label="1" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+            </div>
+            <div class="mah">
+                <input pButton pRipple type="button" (click)="onNearAmount2()" value="£ {{LastTotal}}" label="" class="p-col-2 p-row-2 p-mr-1 p-mb-1 amountButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value="." label="." class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value=".0" label=".0" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+                <input pButton pRipple type="button" (click)="onCalDesc($event)" value=".00" label=".00" class="p-col-2 p-row-2 p-mr-1 p-mb-1 calButton">
+            </div>
+            <div class="mah">
+                <input pButton pRipple type="button" value="CARD" (click)="onCard()" label="Card" style="background-color: rgb(175, 61, 53);width: 20.5vh;" class="p-col-2 p-row-2 p-mr-1 p-mb-1 cardAmount">
+                <input pButton pRipple type="button" value="ENTER" (click)="onEnter()" label="Enter" style="background-color: rgb(52, 173, 123);" class="p-col-2 p-row-2 p-mr-1 p-mb-1 cardAmount">
+                <input pButton pRipple type="button" value="CLEAR DESC" (click)="onClearDesc()" label="Clear" style="background-color: rgb(175, 61, 53);" class="p-col-2 p-row-2 p-mr-1 p-mb-1 cardAmount">
+                <input pButton pRipple type="button" value="CASH" (click)="onCash()" label="Cash" style="background-color: rgb(175, 61, 53);" class="p-col-2 p-row-2 p-mr-1 p-mb-1 cardAmount">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- // Dialog Panel -->
+
+
+<!-- //on Grocery Cost -->
+<p-dialog header={{CostLabel}} [(visible)]="enableCost" [position]="position" [modal]="true" [style]="{width: '93vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
     <div class="col-5">
         <div>
             <span *ngFor="let d of doubleCost1; let i = index;">
                 <input #inputValue
-                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 25.5vh;display: inline-grid;"
                     [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
-                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+                    (click)="onCost(d,'bottom')" class="p-col-1 p-mr-1 p-mb-1">
             </span>
         </div>
         <div>
             <span *ngFor="let d of doubleCost2; let i = index;">
                 <input #inputValue
-                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
+                    style="font-size: larger;height: 8vh;width: fit-content;width: 25.5vh;display: inline-grid;"
                     [ngStyle]="{'background-color':'firebrick'}" pButton type="button" [ngValue]=d value={{d}}
-                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
+                    (click)="onCost(d,'bottom')" class="p-col-1 p-mr-1 p-mb-1">
             </span>
         </div>
     </div>
@@ -224,53 +355,623 @@
         <div class="p-field p-col-12 p-md-12">
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">£</span>
-                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
-                <span class="p-inputgroup-addon">.00</span>
+                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost" onfocus="true">
             </div>
         </div>
     </div>
 
-    <!-- <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
-        <div class="p-field p-col-12 p-md-12">
-            <span class="p-float-label">
-                <input type="text" id="inputtext" pInputText [(ngModel)]="Price">
-                <label for="inputtext">Entered Price</label>
-            </span>
-        </div>
-    </div> -->
-    <div class="col-5">
-        <div>
-            <span *ngFor="let d of singleCost1; let i = index;">
-                <input #inputValue
-                    style="font-size: larger;height: 8vh;border-radius: 2vh;width: fit-content;width: 27vh;display: inline-grid;"
-                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
-                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
-            </span>
-        </div>
-        <div>
-            <span *ngFor="let d of singleCost2; let i = index;">
-                <input #inputValue
-                    style="font-size: larger;height: 8vh;width: fit-content;width: 27vh;display: inline-grid;"
-                    [ngStyle]="{'background-color':'darkgoldenrod'}" pButton type="button" [ngValue]=d value={{d}}
-                    (click)="onCost(d)" class="p-col-1 p-mr-1 p-mb-1">
-            </span>
-        </div>
-    </div>
-    <button pButton type="button" label="Cancel" class="p-col-3 p-mr-4 p-mb-1 p-button-outlined"></button>
-    <button pButton type="button" label="Enter" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined"></button>
-    <button pButton type="button" label="Clear" class="p-col-3 p-mr-1 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Cancel" (click)="onCancel()" class="p-col-3 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Enter" (click)="onEnterCost()" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined"></button>
+    <button pButton type="button" label="Clear" (click)="onClearCost()" class="p-col-3 p-mr-1 p-mb-1 p-button-outlined"></button>
 </p-dialog>
 
 
+<!-- Change Cash -->
 <p-dialog [(visible)]="EnableChangeAmount">
-    <!-- <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
-        <div class="p-field p-col-12 p-md-12">
-            <div class="p-inputgroup">
-                <span class="p-inputgroup-addon">£</span>
-                <input type="number" pInputText placeholder="Entered Price" [(ngModel)]="Cost">
-                <span class="p-inputgroup-addon">.00</span>
-            </div>
-        </div>
-    </div> -->
     Change : £ {{ChangeAmount}}
 </p-dialog>
+
+
+
+<!-- Vendor -->
+<p-dialog header="Vendor List" [(visible)]="enableVendor" [modal]="true" [baseZIndex]="10000">
+    <p-table #vt [value]="vendorList" [columns]="vendorColumn" [paginator]="true" [responsive]="true" autoLayout="true" selectionMode="single" [loading]="loading" styleClass="p-datatable-striped" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" exportFilename="VENDOR_DATA">
+        <ng-template pTemplate="header" let-vendorColumn>
+            <tr style="text-align: center">
+                <th *ngFor="let col of vendorColumn">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-response>
+            <tr [pSelectableRow]="response" (dblclick)="onRowVendor($event, response)">
+                <td *ngFor="let col of columns" selectionMode="single">
+                    {{response[col.SlNo]}} {{response[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+
+<!-- Transaction List -->
+<p-dialog header="Sales Transaction List Data" [(visible)]="enableTrans" [modal]="true" [baseZIndex]="10000">
+    <!-- <div class="p-mb-3">
+        <p-button type="button" icon="pi pi-chevron-left" (click)="prev()" [disabled]="isFirstPage()"
+            styleClass="p-button-text"></p-button>
+        <p-button type="button" icon="pi pi-refresh" (click)="reset()" styleClass="p-button-text"></p-button>
+        <p-button type="button" icon="pi pi-chevron-right" (click)="next()" [disabled]="isLastPage()"
+            styleClass="p-button-text"></p-button>
+   
+        </div> -->
+
+    <!-- <p-scrollPanel [style]="{width: '100%', height: '200px'}" styleClass="custombar1"> -->
+    <p-table #dt [value]="TransListData" [columns]="TransColumn" [paginator]="true" [responsive]="true" autoLayout="true" selectionMode="single" [loading]="loading" styleClass="p-datatable-striped" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" exportFilename="TRANACTION_DATA">
+        <ng-template pTemplate="header" let-TransColumn>
+            <tr style="text-align: center">
+                <th *ngFor="let col of TransColumn">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-response>
+            <tr [pSelectableRow]="response" (dblclick)="onRowTrans(response)">
+                <td *ngFor="let col of columns" selectionMode="single">
+                    {{response[col.SlNo]}} {{response[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- </p-scrollPanel> -->
+    <p-divider align="center">
+        <span class="p-tag">Item Description Based on Transaction Number</span>
+    </p-divider>
+    <!-- <p-scrollPanel [style]="{width: '100%', height: '200px'}" styleClass="custombar1"> -->
+    <p-table #dd [value]="TransSubListData" [columns]="SubTransColumn" [paginator]="true" [responsive]="true" [rows]="rows" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" exportFilename="POSTED_TRANACTION_DATA">
+        <ng-template pTemplate="header" let-SubTransColumn>
+            <tr style="text-align: center">
+                <th *ngFor="let col of SubTransColumn">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-res>
+            <tr>
+                <td *ngFor="let col of columns">
+                    {{res[col.SlNo]}} {{res[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <!-- </p-scrollPanel> -->
+</p-dialog>
+
+
+<!-- <p-dialog header="Sales Transaction List Data" [(visible)]="enableTrans" [modal]="true" [baseZIndex]="10000">
+    <p-table #dt [value]="TransListData" [columns]="TransColumn" [paginator]="true" [responsive]="true" autoLayout="true" selectionMode="single" [loading]="loading" styleClass="p-datatable-striped" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" exportFilename="TRANACTION_DATA">
+        <ng-template pTemplate="header" let-TransColumn>
+            <tr style="text-align: center">
+                <th *ngFor="let col of TransColumn">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-response>
+            <tr [pSelectableRow]="response" (dblclick)="onRowTrans(response)">
+                <td *ngFor="let col of columns" selectionMode="single">
+                    {{response[col.SlNo]}} {{response[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-divider align="center">
+        <span class="p-tag">Item Description Based on Transaction Number</span>
+    </p-divider>
+    <p-table #dd [value]="TransSubListData" [columns]="SubTransColumn" [paginator]="true" [responsive]="true" [rows]="rows" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" exportFilename="POSTED_TRANACTION_DATA">
+        <ng-template pTemplate="header" let-SubTransColumn>
+            <tr style="text-align: center">
+                <th *ngFor="let col of SubTransColumn">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-res>
+            {{res[col.field]}}
+        </ng-template>
+    </p-table>
+</p-dialog> -->
+
+
+
+<!-- Normal Login -->
+<p-dialog header="LOGIN TO CLEAR SALES" [(visible)]="enableClearPermission" [modal]="true" [baseZIndex]="10000">
+    <!-- <a (click)="onSignUp()">New User?</a> -->
+    <div class="p-col-12" style="background-color: ghostwhite;">
+        <div class="box">
+            <div class="p-fluid p-grid" style="margin-top: 3vh;">
+                <div class="p-col-2"></div>
+                <div class="p-field p-col-12 p-md-8">
+                    <span class="p-float-label">
+                        <input id="codeInput" [(ngModel)]="UserName"
+                            (input)="onInputChange($event)" value={{value}} pInputText autofocus="true"/>
+                        <label for="inputtext">User ID</label>
+                    </span>
+                </div>
+                <div class="p-col-2"></div>
+                <div class="p-col-2"></div>
+                <div class="p-field p-col-8 p-md-8">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" [(ngModel)]="Password" (input)="onInputChange(value)"
+                            value="Password" (keyup.enter)="onClearLogin()" pInputText>
+                        <label for="float-input">Password</label>
+                    </span>
+                </div>
+                <div class="p-col-2"></div>
+                <div class="p-col-4"></div>
+                <div class="p-field p-col-4 p-md-4">
+                    <button pButton type="button" label="Sign In" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined" (click)="onClearLogin()" [disabled]="!UserName || !Password"></button>
+                </div>
+                <div class="p-col-4"></div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:center">
+        <!-- <input (input)="onInputChange($event)" class="input" value={{value}}
+            placeholder="Tap on the virtual keyboard to start" /> -->
+        <div class="simple-keyboard"></div>
+    </div>
+</p-dialog>
+
+
+
+<!-- //Normal SignUp -->
+<p-dialog header="CREATE NEW USER FOR SPICE OF ASIA" [(visible)]="enableSignUp">
+    <div class="p-col-12" style="background-color: ghostwhite;">
+        <div class="box">
+            <div class="p-fluid p-grid" style="margin-top: 3vh;">
+                <div class="p-col-1"></div>
+                <div class="p-field p-col-5 p-md-5">
+                    <span class="p-float-label">
+                        <input id="codeInput" [(ngModel)]="UserID" (input)="onInputChange($event)" value={{value}}
+                            pInputText autofocus="true">
+                        <label for="inputtext">User ID</label>
+                    </span>
+                </div>
+                <div class="p-field p-col-5 p-md-5">
+                    <span class="p-float-label">
+                        <input id="codeInput" [(ngModel)]="User" (input)="onInputChange($event)" value={{value}}
+                            pInputText>
+                        <label for="inputtext">User Name</label>
+                    </span>
+                </div>
+                <div class="p-col-1"></div>
+                <div class="p-col-1"></div>
+                <div class="p-field p-col-5 p-md-5">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" [(ngModel)]="Pass" (input)="onInputChange(value)"
+                            value="Pass" pInputText>
+                        <label for="float-input">Password</label>
+                    </span>
+                </div>
+                <div class="p-field p-col-5 p-md-5">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" [(ngModel)]="CPassword" (input)="onInputChange(value)"
+                            value="CPassword" pInputText>
+                        <label for="float-input">Confirm Password</label>
+                    </span>
+                </div>
+                <div class="p-col-1"></div>
+                <div class="p-col-2"></div>
+                <div class="p-field p-col-8 p-md-8">
+                    <span class="p-float-label">
+                        <input id="float-input" type="text" [(ngModel)]="Email" (input)="onInputChange(value)"
+                            value="Email" pInputText>
+                        <label for="float-input">Email ID</label>
+                    </span>
+                </div>
+                <div class="p-col-1"></div>
+                <div class="p-col-4"></div>
+                <div class="p-field p-col-4 p-md-4">
+                    <button pButton type="button" label="Register" class="p-col-5 p-mr-4 p-mb-1 p-button-outlined" [disabled]="!UserID || User || Pass || !CPassword" (click)="onRegister()"></button>
+                </div>
+                <div class="p-col-4"></div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:center">
+        <!-- <input (input)="onInputChange($event)" class="input" value={{value}}
+            placeholder="Tap on the virtual keyboard to start" /> -->
+        <div class="simple-keyboard"></div>
+    </div>
+</p-dialog>
+
+
+<!-- Side Item Menu -->
+<p-dialog header="Item Menu" [(visible)]="enableSide" [position]="position" [modal]="true" [style]="{width: '98vw',height: '100%'}" [closeOnEscape]="true" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <!-- <span *ngFor="let d of menuTempTitle; let i = index">
+        <input #inputValue style="padding: 0px;height: 6.5vh;width: 32vh;display: inline-grid;"
+            [ngStyle]="{'background-color':d.Color}" (click)="onSubMenuItem(d)" pButton pRipple
+            type="button" [ngValue]=d value={{d.Description}} class="p-shadow-10 p-col-2 p-mr-1 p-mb-1">
+    </span> -->
+    <p-toast position="top-center" key="i-err" (onClose)="onSubItemClose()"></p-toast>
+
+    <div class="card">
+        <p-dataView #dv [value]="menuTempTitle" [paginator]="true" [rows]="20" filterBy="Description" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+            <ng-template pTemplate="header">
+                <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+                    <!-- <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Description" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown> -->
+                    <span class="p-input-icon-left p-mb-2 p-mb-md-0">
+                        <i class="pi pi-search"></i>
+                        <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter($event.target.value)">
+                    </span>
+                    <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+                </div>
+            </ng-template>
+
+            <ng-template let-product pTemplate="listItem">
+                <div class="p-col-12">
+                    <!-- <div class="product-list-item" [ngStyle]="{'background-color':product.Color}"> -->
+                    <div class="product-list-item">
+                        <img [src]="'../electron-build/assets/items/' + product.ImagePath" [alt]="product.Description" />
+                        <div class="product-list-detail">
+                            <div class="product-name">{{product.Description}}</div>
+                            <div class="product-description">{{product.Key_Value}}</div>
+                            <!-- <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating> -->
+                            <i class="pi pi-tag product-category-icon"></i><span class="product-category">{{product.Menu_ID}}</span>
+                        </div>
+                        <div class="product-list-action">
+                            <!-- <span class="product-price">${{product.Key_ID}}</span> -->
+                            <p-button icon="pi pi-shopping-cart" label="Add to Cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                            <!-- <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.Key_ID}}</span> -->
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template let-product pTemplate="gridItem">
+                <div class="p-col-12 p-md-4">
+                    <div class="product-grid-item card">
+                        <!-- <div class="product-grid-item card" [ngStyle]="{'background-color':product.Color}"> -->
+                        <!-- <div class="product-grid-item-top">
+                        </div> -->
+                        <div class="product-grid-item-bottom">
+                            <span class="product-category"><i class="pi pi-tag product-category-icon"></i> {{product.Menu_ID}}</span>
+                            <img [src]="'../assets/items/' + product.ImagePath" [alt]="product.Description" />
+                            <p-button icon="pi pi-shopping-cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                        </div>
+                        <div class="product-grid-item-content">
+                            <div class="product-name">{{product.Description}}</div>
+                            <div class="product-descriptio4n">{{product.Key_Value}}</div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-dataView>
+    </div>
+</p-dialog>
+
+
+<!-- //Data View 
+ -->
+
+<!-- <p-dataView #dv [value]="menuTempTitle" [paginator]="true" [rows]="20" filterBy="Description" [sortField]="sortField" [sortOrder]="sortOrder" layout="grid">
+    <ng-template pTemplate="header">
+        <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+            <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By Description" (onChange)="onSortChange($event)" styleClass="p-mb-2 p-mb-md-0"></p-dropdown>
+            <span class="p-input-icon-left p-mb-2 p-mb-md-0">
+                <i class="pi pi-search"></i>
+                <input type="search" pInputText placeholder="Search by Name" (input)="dv.filter($event.target.value)">
+            </span>
+            <p-dataViewLayoutOptions></p-dataViewLayoutOptions>
+        </div>
+    </ng-template>
+
+    BoColor: "-65408" Colour: "8388863" Description: "PILLSBURY ATTA(10KG)" Down_Path: "MyCom" ISImage: false ImagePath: null Key_Command: "0" Key_ID: 1 Key_Value: "23822" Menu_ID: "ATTA 10KG" RoleID: 2 Up_Path: "Rectangle" Color: "green" Colour: "65535"
+    Description: "YELLOW PLANTAIN" ID: 24 ImagePath: null Key_Command: "0" Key_ID: 1 Key_Value: "13248" Menu_ID: "VEG"
+
+    <ng-template let-product pTemplate="listItem">
+        <div class="p-col-12">
+            <div class="product-list-item" [ngStyle]="{'background-color':product.Color}">
+                <img [src]="'../assets/items/' + product.ImagePath" [alt]="product.Description" />
+                <div class="product-list-detail" style="color: white">
+                    <div class="product-name">{{product.Description}}</div>
+                    <div class="product-description">{{product.Key_Value}}</div>
+                    <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                    <i class="pi pi-tag product-category-icon"></i><span class="product-category">{{product.Menu_ID}}</span>
+                </div>
+                <div class="product-list-action">
+                    <span class="product-price">${{product.Key_ID}}</span>
+                    <p-button icon="pi pi-shopping-cart" label="Add to Cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                    <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.Key_ID}}</span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template let-product pTemplate="gridItem">
+        <div class="p-col-12 p-md-4">
+            <div class="product-grid-item card" [ngStyle]="{'background-color':product.Color}">
+                <div class="product-grid-item-top" style="color: white">
+                    <div>
+                        <i class="pi pi-tag product-category-icon"></i>
+                        <span class="product-category">{{product.Menu_ID}}</span>
+                        <p-button icon="pi pi-shopping-cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                    </div>
+                    <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{product.inventoryStatus}}</span>
+                </div>
+
+                <div class="product-grid-item-bottom" style="color: white">
+
+                    <span class="product-category"><i class="pi pi-tag product-category-icon"></i>{{product.Menu_ID}}</span>
+                    <span class="product-price">${{product.Key_ID}}</span>
+                    <p-button icon="pi pi-shopping-cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                </div>
+                <div class="product-grid-item-content" style="color: white">
+                    <img [src]="'../assets/items/' + product.ImagePath" [alt]="product.Description" />
+                    <div class="product-name">{{product.Description}}</div>
+                    <div class="product-descriptio4n">{{product.Key_Value}}</div>
+                    <p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating>
+                </div>
+                <div class="product-grid-item-bottom" style="color: white">
+
+                    <span class="product-category"><i class="pi pi-tag product-category-icon"></i>{{product.Menu_ID}}</span>
+                    <span class="product-price">${{product.Key_ID}}</span>
+                    <p-button icon="pi pi-shopping-cart" (click)="onSubMenuItem(product)" [disabled]="product.inventoryStatus === 'OUTOFSTOCK'"></p-button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</p-dataView> -->
+
+
+
+<!-- Pet Cash -->
+<p-dialog header="Pet Cash" [(visible)]="enablePetty" [modal]="true" [style]="{width: '93vw'}" [maximizable]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-3"></div>
+        <div class="p-field p-col-12 p-md-6">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">£</span>
+                <input type="number" pInputText placeholder="Enter Cash Amount" [(ngModel)]="PetCash" autofocus="true" autocomplete="off">
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-3"></div>
+    </div>
+    <div class="p-fluid p-grid">
+        <span class="p-col-1 p-md-1"></span>
+        <span class="p-col-1 p-md-2">
+                <input pButton pRipple type="button" value="Cash Less" [disabled]="!PetCash" (click)="CashLess()" class="p-col-12 p-md-2 p-button-rounded p-button-danger mahh">
+            </span>
+        <span class="p-col-1 p-md-2">
+                <input pButton pRipple type="button" value="From Lottery" [disabled]="!PetCash" (click)="FromLottery()" class="p-col-2 p-button-rounded p-button-secondary mahh">
+            </span>
+        <span class="p-col-1 p-md-2">
+                <input pButton pRipple type="button" value="Vendor Less" [disabled]="!PetCash" (click)="VendorLess()" class="p-col-2 p-button-rounded p-button-success mahh" id="navToggle">
+            </span>
+        <span class="p-col-1 p-md-2">
+                <input pButton pRipple type="button" value="Other Sale Out" [disabled]="!PetCash" (click)="OtherOut()" class="p-col-2 p-button-rounded p-button-warning mahh">
+            </span>
+        <span class="p-col-1 p-md-2">
+                <input pButton pRipple type="button" value="For Bank" [disabled]="!PetCash" (click)="FromBank()" class="p-col-2 p-button-rounded p-button-rounded p-button-secondary mahh">
+            </span>
+
+
+        <span class="p-col-1 p-md-1"></span>
+        <span class="p-col-1 p-md-1"></span>
+
+
+        <span class="p-col-1 p-md-2">
+            <input pButton pRipple type="button" value="Emp Wage" [disabled]="!PetCash" (click)="EmployeeWages()" class="p-col-2 p-button-rounded p-button-rounded p-button-secondary mahh">
+        </span>
+        <span class="p-col-1 p-md-2">
+            <input pButton pRipple type="button" value="Paying Point" [disabled]="!PetCash" (click)="PayPoint()" class="p-col-2 p-button-rounded p-button-danger mahh">
+        </span>
+        <span class="p-col-1 p-md-2">
+            <input pButton pRipple type="button" value="Account Pay" [disabled]="!PetCash" (click)="AccPay()" class="p-col-2 p-button-rounded p-button-secondary mahh">
+        </span>
+        <span class="p-col-1 p-md-2">
+            <input pButton pRipple type="button" value="Pay Instance" [disabled]="!PetCash" (click)="PayInstance()" class="p-col-2 p-button-rounded p-button-success mahh" id="navToggle">
+        </span>
+        <span class="p-col-1 p-md-2">
+            <input pButton pRipple type="button" value="Cash Return" [disabled]="!PetCash" (click)="CashReturn()" class="p-col-2 p-button-rounded p-button-warning mahh">
+        </span>
+        <span class="p-col-1 p-md-1"></span>
+    </div>
+</p-dialog>
+
+
+
+<!-- Sales Mode -->
+
+<!-- For Sales Mode -->
+
+<p-dialog header={{SaleLabel}} [(visible)]="enableSalesHead" [modal]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    <div class="p-fluid p-grid" style="margin-top: 1.5vh;">
+        <div class="p-field p-col-12 p-md-8">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">£</span>
+                <input type="number" pInputText placeholder="Enter Cash Amount" [(ngModel)]="PetCash" autofocus="true" autocomplete="off">
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-4">
+            <input pButton pRipple type="button" value={{SaleLabel}} [disabled]="!PetCash" (click)="AddPayInstanceSales()" class="p-col-2 p-button-rounded p-button-success mahh" id="navToggle">
+        </div>
+    </div>
+</p-dialog>
+
+
+
+<!-- Check Item Price -->
+<p-dialog header="Check Item Price" [(visible)]="enablePriceCheck" [modal]="true" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+    <div class="p-fluid p-grid mah">
+        <div class="p-field p-col-9 p-md-9" style="margin-top: 2vh;">
+            <span class="p-float-label">
+                <input id="codeInput" pInputText [(ngModel)]="PriceDescription" type="text"
+                    (keyup.enter)="PriceCheckDes()" autofocus="true">
+                <label for="inputtext">Price Description</label>
+            </span>
+        </div>
+        <div class="p-field p-col-3 p-md-3" style="margin-top: auto;">
+            <span class="p-col-3 p-md-12">
+                <input pButton pRipple type="button" value="Check" [disabled]="!PriceDescription" (click)="PriceCheckDes()" class="p-col-12 p-button-rounded p-button-success" id="navToggle">
+            </span>
+        </div>
+        <div *ngIf="enablePriceAdd" style="font-family: monospace;font-size: larger;" class="p-field p-col-9 p-md-9">
+            {{PriceDes}}
+        </div>
+        <div *ngIf="enablePriceAdd" class="p-field p-col-3 p-md-3">
+            <span class="p-col-3 p-md-12">
+            <input pButton pRipple type="button" value="Add Item" (click)="onCheck()" class="p-col-2 p-button-rounded p-button-warning mahh">
+                </span>
+        </div>
+    </div>
+</p-dialog>
+
+
+
+
+<!-- Sales Discount -->
+
+<p-dialog header="Line Discount" [(visible)]="enableLineDiscount" [modal]="true" [baseZIndex]="10000">
+    <div class="p-field p-col" style="margin: 2vh;">
+        <span class="p-float-label">
+        <p-inputNumber id="LineDiscontAmount" [(ngModel)]="LineDiscontAmount" mode="currency" currency="GBP" autofocus="true"></p-inputNumber>
+        <label for="LineDiscontAmount">Line Discont Amount</label>
+    </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Amount" class="p-button-text" [disabled]="!LineDiscontAmount" (click)="onDiscountAmount()"></button>
+        <button pButton pRipple label="Percentage" class="p-button-text" [disabled]="!LineDiscontAmount" (click)="onDiscountPercentage()"></button>
+    </ng-template>
+</p-dialog>
+
+
+
+<p-dialog header="Total Discount" [(visible)]="enableTotalDiscount" [modal]="true" [baseZIndex]="10000">
+    <div class="p-field p-col mah">
+        <span class="p-float-label">
+        <p-inputNumber id="TotalDiscontAmount" [(ngModel)]="TotalDiscontAmount" mode="currency" currency="GBP"></p-inputNumber>
+        <label for="TotalDiscontAmount">Total Discont Amount</label>
+    </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Amount" class="p-button-text" [disabled]="!TotalDiscontAmount" (click)="onDiscountTotalAmount()"></button>
+        <button pButton pRipple label="Percentage" class="p-button-text" [disabled]="!TotalDiscontAmount" (click)="onDiscountTotalPercentage()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Line 100% Discount" [(visible)]="enableCentDiscount" [modal]="true" [baseZIndex]="10000">
+    <div class="p-field p-col mah">
+        <span class="p-float-label">
+        <p-inputNumber id="CentDiscontAmount" [(ngModel)]="CentDiscontAmount" mode="currency" currency="GBP"></p-inputNumber>
+        <label for="CentDiscontAmount">100 % Discont Amount</label>
+    </span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Amount" class="p-button-text" [disabled]="!CentDiscontAmount" (click)="onCentDiscountAmount()"></button>
+        <button pButton pRipple label="Percentage" class="p-button-text" [disabled]="!CentDiscontAmount" (click)="onCentDiscountPercentage()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="productDialog" header="Edit Item Details" [modal]="true" [baseZIndex]="10000" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <!-- <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.image" class="product-image" *ngIf="product.image"> -->
+        <div class="p-field">
+            <label for="Description">Description</label>
+            <input type="text" pInputText id="name" [(ngModel)]="SelectedRowItem.Description" [disabled]="true" />
+            <small class="p-error" *ngIf="submitted && !SelectedRowItem.Description">Description is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="inventoryStatus">Inventory Status</label>
+            <p-dropdown [(ngModel)]="SelectedRowItem.Inventory" inputId="inventoryStatus" [options]="statuses" placeholder="Select">
+                <ng-template let-option pTemplate="item">
+                    <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <!-- <div class="p-field">
+            <label for="description">Description</label>
+            <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
+        </div>
+        <div class="p-field">
+            <label for="inventoryStatus">Inventory Status</label>
+            <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses" placeholder="Select">
+                <ng-template let-option pTemplate="item">
+                    <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+                </ng-template>
+            </p-dropdown>
+        </div>
+
+        <div class="p-field">
+            <label class="p-mb-3">Category</label>
+            <div class="p-formgrid p-grid">
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category1" name="category" value="Accessories" [(ngModel)]="product.category"></p-radioButton>
+                    <label for="category1">Accessories</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category"></p-radioButton>
+                    <label for="category2">Clothing</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category3" name="category" value="Electronics" [(ngModel)]="product.category"></p-radioButton>
+                    <label for="category3">Electronics</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category"></p-radioButton>
+                    <label for="category4">Fitness</label>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="p-formgrid p-grid">
+
+            <div class="p-field p-col">
+                <label for="Quantity">Quantity</label>
+                <p-inputNumber id="Quantity" [(ngModel)]="SelectedRowItem.Quantity" required autofocus="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col">
+                <label for="Price">Price</label>
+                <p-inputNumber id="Price" [(ngModel)]="SelectedRowItem.Price" mode="currency" currency="GBP" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col">
+                <label for="Discount">Discount</label>
+                <p-inputNumber id="Discount" [(ngModel)]="SelectedRowItem.Discount" mode="currency" currency="GBP" [disabled]="true"></p-inputNumber>
+            </div>
+            <div class="p-field p-col">
+                <label for="Amount">Amount</label>
+                <p-inputNumber id="Amount" [(ngModel)]="SelectedRowItem.Amount" mode="currency" currency="GBP" [disabled]="true"></p-inputNumber>
+            </div>
+        </div>
+
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
+
+<!-- //Funcky Function -->
+
+<!-- <script>
+    var mainNav = document.getElementById('mainNav');
+    var navToggle = document.getElementById('navToggle');
+    mainNav.classList.add('collapsed');
+
+    function mainNavToggle() {
+        mainNav.classList.toggle('collapsed');
+    }
+    navToggle.addEventListener('click', mainNavToggle);
+</script> -->

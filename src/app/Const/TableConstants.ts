@@ -64,14 +64,18 @@ export class TableConstants {
   VendorPriceChangeColumn: any;
   ItemDescriptionColumn: any;
 
+  //Buttons
+  TransColumn: any[];
+  TransSubColumn: any = [];
+
   constructor() {
     this.ItemDescriptionColumn = [
       { field: 'Sno', header: 'Sno' },
       { field: 'Description', header: 'Description' },
       { field: 'Quantity', header: 'Quantity' },
-      { field: 'Price', header: 'Price' },
-      { field: 'Discount', header: 'Discount' },
-      { field: 'Amount', header: 'Amount' },
+      { field: 'Price', header: 'Price (£)' },
+      { field: 'Discount', header: 'Discount (£)' },
+      { field: 'Amount', header: 'Amount (£)' },
     ];
 
     this.MenuColumn = [
@@ -93,6 +97,44 @@ export class TableConstants {
       // { field: 'NoLines', header: 'No. of Lines' },
       // { field: 'Available', header: 'Available' },
     ];
+
+    this.TransColumn = [
+      { field: 'SlNo', header: 'SlNo' },
+      // { field: 'Trans_ID', header: 'Trans ID' },
+      { field: 'Trans_No', header: 'Trans Slip' },
+      { field: 'TransType', header: 'Trans Type' },
+      // { field: 'Sales_Type', header: 'Sales Type' },
+      { field: 'Sales_Amount', header: 'Sale Amount (£)' },
+      { field: 'Staff_ID', header: 'Staff ID' },
+      { field: 'Store_ID', header: 'Store ID' },
+      { field: 'Till_ID', header: 'Till ID' },
+      { field: 'Z_Report_ID', header: 'Z_Report_ID' },
+    ];
+
+    this.TransSubColumn = [
+      { field: 'SlNo', header: 'SlNo' },
+      { field: 'Line_No', header: 'Line No' },
+      { field: 'Trans_No', header: 'Trans Slip' },
+      { field: 'Number', header: 'Item No' },
+      { field: 'Barcode', header: 'Barcode' },
+      { field: 'Description', header: 'Description' },
+      { field: 'Quantity', header: 'Quantity' },
+      { field: 'Trans_Type', header: 'Trans Type' },
+      // { field: 'Trans_Date', header: 'Trans_Date' },
+      { field: 'Disc_Amount', header: 'Discount Amount' },
+      { field: 'Price', header: 'Price' },
+      { field: 'Amount', header: 'Sale Amount' },
+      { field: 'Net_Amount', header: 'Net Amount' },
+      { field: 'Department_ID', header: 'Department ID' },
+      { field: 'Scale', header: 'Scale' },
+      { field: 'Scanned', header: 'Scanned' },
+      { field: 'Staff_ID', header: 'Staff ID' },
+      { field: 'Store_ID', header: 'Store ID' },
+      { field: 'Till_ID', header: 'Till ID' },
+      { field: 'Z_Report_ID', header: 'Z Report ID' },
+    ];
+
+
     this.StoreColumn = [
       { field: 'ID', header: 'ID' },
       { field: 'Name', header: 'Name' },
@@ -360,11 +402,18 @@ export class TableConstants {
       { field: 'Deliveroo', header: 'Deliveroo' },
     ];
     this.VendorListColumn = [
-      { field: 'Vendor', header: 'Vendor' },
+      { field: 'SlNo', header: 'Sno' },
+      { field: 'Vendor_No', header: 'Vendor No' },
       { field: 'Name', header: 'Name' },
-      { field: 'PostCode', header: 'PostCode' },
-      { field: 'Phone', header: 'Phone' },
+      { field: 'Post_Code', header: 'PostCode' },
+      { field: 'Phone_No', header: 'Phone' },
       { field: 'POS', header: 'POS' },
+      // { field: 'Address_1', header: 'Address 1' },
+      // { field: 'Address_2', header: 'Address 2' },
+      // { field: 'Address_3', header: 'Address 3' },
+      // { field: 'Contact', header: 'Contact' },
+      // { field: 'Fax_No', header: 'Fax No' },
+      // { field: 'Our_AC_No', header: 'AC No' }
     ];
     this.PurhaseOrderListColumn = [
       { field: 'OrderNo', header: 'OrderNo' },
